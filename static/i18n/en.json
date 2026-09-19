@@ -1,0 +1,114 @@
+{
+  "_name": "English",
+  "_code": "en",
+
+  "lang.title": "Switch language",
+
+  "conn.connecting": "Connecting…",
+  "conn.live": "Live",
+  "conn.offline": "Offline",
+  "conn.broken": "Disconnected, reconnecting…",
+  "conn.authlost": "Session expired, reload the page",
+
+  "btn.add": "+ Add account",
+  "btn.refresh": "Refresh",
+  "btn.reload": "Reload",
+  "btn.clear": "Clear list",
+  "btn.show": "Show",
+  "btn.hide": "Hide",
+  "btn.copy": "Copy",
+  "btn.test": "Test push",
+  "btn.sending": "Sending…",
+  "btn.unbind": "Unbind",
+  "btn.refreshqr": "Refresh QR code",
+  "btn.done": "Done",
+
+  "sec.accounts": "Accounts",
+  "sec.logs": "API call log",
+
+  "filter.all": "All accounts",
+  "filter.search": "Search account / path / text / IP",
+  "filter.failonly": "Failures only",
+
+  "th.time": "Time",
+  "th.source": "Source",
+  "th.method": "Method",
+  "th.bot": "Account",
+  "th.action": "Action",
+  "th.status": "Status",
+  "th.duration": "Took",
+  "th.ip": "Client IP",
+  "th.detail": "Detail",
+
+  "src.webui": "UI",
+  "src.api": "API",
+
+  "card.token": "API Token",
+  "card.recv": "Messages in",
+  "card.recvUnit": "",
+  "card.monitoring": "Listening",
+  "card.notMonitoring": "Not listening",
+  "card.activated": "Activated",
+  "card.notActivated": "Not activated",
+  "card.notActivatedTip": "Send a message to ClawBot in WeChat first, so the server gets a reply context",
+  "card.testPlaceholder": "Test message, empty = default",
+
+  "empty.noBots": "No accounts yet. Click \"Add account\" on the top right and scan the QR code with WeChat.",
+  "empty.noLogs": "No matching calls",
+
+  "count.bots": "{0} total",
+  "count.logs": "showing {0} / loaded {1}",
+
+  "logs.hintFile": "keeping the latest {0} entries in memory, also appended to {1}",
+  "logs.hintMemory": "keeping the latest {0} entries in memory only, lost on restart (use -log-file to persist)",
+
+  "qr.title": "Add account",
+  "qr.alt": "Login QR code",
+  "qr.fetching": "Fetching QR code…",
+  "qr.waiting": "Waiting for scan…",
+  "qr.scaned": "Scanned, confirm on your phone",
+  "qr.ok": "✅ Signed in, account <span class=\"mono\">{0}</span> added",
+  "qr.failed": "❌ {0}",
+  "qr.sessionLost": "Login session lost: {0}",
+  "qr.fetchFail": "Failed to fetch the QR code: {0}",
+  "qr.imgFail": "Failed to load the QR image: {0}",
+  "qr.hint": "Scan the QR code with WeChat and confirm on your phone. If WeChat says your version is too old, update WeChat and try again. An expired code refreshes automatically.",
+
+  "toast.copied": "Copied to clipboard",
+  "toast.copyFail": "Copy failed, select the text manually",
+  "toast.pushOk": "Sent in {0} ms",
+  "toast.pushFail": "Send failed: {0}",
+  "toast.unbound": "Unbound {0}",
+  "toast.unbindFail": "Unbind failed: {0}",
+  "toast.added": "Account added: {0}",
+  "toast.logsFail": "Failed to load the log: {0}",
+  "toast.qrRefreshed": "QR code expired, refreshed automatically",
+
+  "confirm.unbind": "Unbind account {0}?\n\n· The listener for this account stops and its config is removed from config/auth.json\n· The ClawBot connection in WeChat is NOT closed automatically — disconnect it yourself in WeChat (Me → Settings → Plugins → ClawBot)\n· Its API Token stops working immediately",
+
+  "test.default": "✅ WeClawBot test message\n{0}",
+
+  "err.auth_required": "Password required — if you already entered it, reload the page (F5)",
+  "err.too_many_failures": "Too many wrong passwords, paused for {0}s",
+  "err.admin_local_only": "The WebUI is only reachable from localhost or private networks — if this is wrong (Tailscale / reverse proxy), add the peer network to -trust-cidr",
+  "err.csrf_header_missing": "Missing the X-WebUI header",
+  "err.bot_not_found": "Account not found",
+  "err.bot_not_activated": "This account is not activated yet: send a message to ClawBot in WeChat first so the server gets a reply context",
+  "err.send_failed": "Send failed",
+  "err.qrcode_fetch_failed": "Failed to fetch the QR code",
+  "err.login_session_missing": "Login session not found or expired, fetch a new QR code",
+  "err.login_no_credentials": "Login confirmed but WeChat returned no credentials",
+  "err.qrcode_expired": "The QR code expired too many times, click \"Refresh QR code\"",
+  "err.qrcode_refresh_failed": "Failed to refresh the QR code",
+  "err.login_failed": "Sign-in failed",
+
+  "action.bind": "Bind account",
+  "action.unbind": "Unbind account",
+  "action.test_push": "Test push",
+
+  "logdetail.bind": "Signed in, listening started",
+  "logdetail.unbind": "Listener stopped and config removed; disconnect it in WeChat yourself",
+
+  "footer.api": "Public API: <code>/bots/{bot_id}/messages</code> · <code>/bots/{bot_id}/typing</code> (unchanged from upstream)",
+  "footer.built": "Built on <a href=\"https://github.com/cp0204/WeClawBot-API\" target=\"_blank\" rel=\"noreferrer\">cp0204/WeClawBot-API</a> · MIT License"
+}

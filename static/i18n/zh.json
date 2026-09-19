@@ -1,0 +1,114 @@
+{
+  "_name": "中文",
+  "_code": "zh",
+
+  "lang.title": "切换语言",
+
+  "conn.connecting": "连接中…",
+  "conn.live": "实时连接",
+  "conn.offline": "未连接",
+  "conn.broken": "连接中断，重连中…",
+  "conn.authlost": "登录失效，请刷新页面",
+
+  "btn.add": "+ 添加账号",
+  "btn.refresh": "刷新",
+  "btn.reload": "重新加载",
+  "btn.clear": "清空列表",
+  "btn.show": "显示",
+  "btn.hide": "隐藏",
+  "btn.copy": "复制",
+  "btn.test": "测试推送",
+  "btn.sending": "发送中…",
+  "btn.unbind": "解绑账号",
+  "btn.refreshqr": "刷新二维码",
+  "btn.done": "完成",
+
+  "sec.accounts": "账号",
+  "sec.logs": "API 调用日志",
+
+  "filter.all": "全部账号",
+  "filter.search": "搜索账号 / 路径 / 文本 / IP",
+  "filter.failonly": "只看失败",
+
+  "th.time": "时间",
+  "th.source": "来源",
+  "th.method": "方法",
+  "th.bot": "账号",
+  "th.action": "动作",
+  "th.status": "状态",
+  "th.duration": "耗时",
+  "th.ip": "来源 IP",
+  "th.detail": "详情",
+
+  "src.webui": "页面",
+  "src.api": "API",
+
+  "card.token": "API Token",
+  "card.recv": "收信计数",
+  "card.recvUnit": "条",
+  "card.monitoring": "监听中",
+  "card.notMonitoring": "未监听",
+  "card.activated": "已激活",
+  "card.notActivated": "未激活",
+  "card.notActivatedTip": "需要先在微信里给 ClawBot 发一条消息，服务端才会拿到回复上下文",
+  "card.testPlaceholder": "测试内容，留空发默认消息",
+
+  "empty.noBots": "还没有账号。点击右上角「添加账号」，用微信扫码即可完成绑定。",
+  "empty.noLogs": "暂无匹配的调用记录",
+
+  "count.bots": "共 {0} 个",
+  "count.logs": "显示 {0} / 已加载 {1} 条",
+
+  "logs.hintFile": "内存滚动保留最近 {0} 条，并已落盘至 {1}",
+  "logs.hintMemory": "仅内存保留最近 {0} 条，重启即清空（可用 -log-file 参数落盘）",
+
+  "qr.title": "添加账号",
+  "qr.alt": "登录二维码",
+  "qr.fetching": "正在获取二维码…",
+  "qr.waiting": "等待扫码…",
+  "qr.scaned": "已扫码，请在手机上点击确认",
+  "qr.ok": "✅ 登录成功，账号 <span class=\"mono\">{0}</span> 已添加",
+  "qr.failed": "❌ {0}",
+  "qr.sessionLost": "登录会话已失效：{0}",
+  "qr.fetchFail": "获取二维码失败：{0}",
+  "qr.imgFail": "二维码加载失败：{0}",
+  "qr.hint": "用微信扫描二维码并在手机上确认。若提示微信版本过低，请先升级微信再重试；二维码过期会自动刷新。",
+
+  "toast.copied": "已复制到剪贴板",
+  "toast.copyFail": "复制失败，请手动选中文本复制",
+  "toast.pushOk": "推送成功，耗时 {0} ms",
+  "toast.pushFail": "推送失败：{0}",
+  "toast.unbound": "已解绑 {0}",
+  "toast.unbindFail": "解绑失败：{0}",
+  "toast.added": "账号已添加：{0}",
+  "toast.logsFail": "加载日志失败：{0}",
+  "toast.qrRefreshed": "二维码已过期，已自动刷新",
+
+  "confirm.unbind": "确定解绑账号 {0} ？\n\n· 服务端会停止该账号的消息监听，并从 config/auth.json 中删除配置\n· 微信侧的 ClawBot 连接不会自动断开，需要你到微信「我 → 设置 → 插件 → ClawBot」里手动断开\n· 解绑后原 API Token 立即失效",
+
+  "test.default": "✅ WeClawBot 测试消息\n{0}",
+
+  "err.auth_required": "需要登录：请输入 WebUI 用户名与口令。如果已经输入过，请刷新页面（F5）重新输入",
+  "err.too_many_failures": "口令错误次数过多，已暂停 {0} 秒",
+  "err.admin_local_only": "WebUI 只允许从本机或内网访问。若是误判（Tailscale / 反向代理），用 -trust-cidr 把对端网段加进来",
+  "err.csrf_header_missing": "缺少 X-WebUI 请求头",
+  "err.bot_not_found": "账号不存在",
+  "err.bot_not_activated": "该账号尚未激活：请先在微信里给 ClawBot 发一条消息，服务器收到后才有回复上下文",
+  "err.send_failed": "发送失败",
+  "err.qrcode_fetch_failed": "获取二维码失败",
+  "err.login_session_missing": "登录会话不存在或已过期，请重新获取二维码",
+  "err.login_no_credentials": "登录已确认，但微信没有返回凭证",
+  "err.qrcode_expired": "二维码多次过期，请点「刷新二维码」重新获取",
+  "err.qrcode_refresh_failed": "刷新二维码失败",
+  "err.login_failed": "登录失败",
+
+  "action.bind": "绑定账号",
+  "action.unbind": "解绑账号",
+  "action.test_push": "测试推送",
+
+  "logdetail.bind": "扫码登录成功，已开始监听",
+  "logdetail.unbind": "已停止监听并从 auth.json 移除；微信侧需自行断开",
+
+  "footer.api": "对外 API：<code>/bots/{bot_id}/messages</code> · <code>/bots/{bot_id}/typing</code>（原项目接口未作改动）",
+  "footer.built": "基于 <a href=\"https://github.com/cp0204/WeClawBot-API\" target=\"_blank\" rel=\"noreferrer\">cp0204/WeClawBot-API</a> 扩展 · MIT License"
+}

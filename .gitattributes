@@ -1,0 +1,5 @@
+# 仓库内与工作区统一用 LF。
+# 这个项目要在 Linux 容器里构建：Dockerfile / *.go 带 CRLF 容易出问题
+# （多行 \ 续行、gofmt 检查都会受影响），所以显式覆盖 Windows 上的 autocrlf。
+* text=auto eol=lf
+*.png binary

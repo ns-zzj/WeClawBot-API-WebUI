@@ -1,0 +1,11 @@
+# 构建上下文里不需要的东西。除了加快构建，更重要的是别把本地凭证带进构建缓存：
+# config/ 里是真实的 auth.json（bot_token / api_token），一旦进过上下文就会残留在
+# Docker 的中间层里。dist/ 是导出的镜像包，体积很大，更不该进上下文。
+.git
+.github
+dist
+config
+img
+.testdata
+*.tar.gz
+*.log

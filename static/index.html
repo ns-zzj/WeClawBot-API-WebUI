@@ -1,0 +1,757 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WeClawBot-API · WebUI</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%A4%96%3C/text%3E%3C/svg%3E">
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #0f1115; --panel: #171a21; --panel2: #1e222b; --line: #2a2f3a;
+    --fg: #e6e9ef; --fg2: #9aa3b2; --accent: #34d399; --accent2: #38bdf8;
+    --danger: #f87171; --warn: #fbbf24; --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      color-scheme: light;
+      --bg: #f4f6f9; --panel: #ffffff; --panel2: #f0f2f6; --line: #dde1e8;
+      --fg: #1b1f27; --fg2: #656e7e; --accent: #059669; --accent2: #0284c7;
+      --danger: #dc2626; --warn: #b45309;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--fg);
+    font: 14px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 16px 48px; }
+  header {
+    position: sticky; top: 0; z-index: 20; background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(8px); border-bottom: 1px solid var(--line);
+  }
+  .head-in { max-width: 1180px; margin: 0 auto; padding: 12px 16px; display: flex; align-items: center; gap: 12px; }
+  h1 { font-size: 17px; margin: 0; font-weight: 650; letter-spacing: .2px; }
+  h1 small { font-weight: 400; color: var(--fg2); font-size: 12px; margin-left: 8px; }
+  .grow { flex: 1; }
+  h2 { font-size: 15px; margin: 26px 0 12px; display: flex; align-items: center; gap: 8px; }
+  h2 .count { color: var(--fg2); font-weight: 400; font-size: 12px; }
+  button {
+    font: inherit; color: var(--fg); background: var(--panel2); border: 1px solid var(--line);
+    border-radius: 8px; padding: 7px 13px; cursor: pointer; transition: .15s;
+  }
+  button:hover { border-color: var(--fg2); }
+  button:disabled { opacity: .55; cursor: default; }
+  button.primary { background: var(--accent); border-color: var(--accent); color: #05140e; font-weight: 600; }
+  button.danger { color: var(--danger); border-color: color-mix(in srgb, var(--danger) 40%, var(--line)); }
+  button.danger:hover { background: color-mix(in srgb, var(--danger) 14%, transparent); }
+  button.mini { padding: 3px 9px; font-size: 12px; border-radius: 6px; }
+  .mono { font-family: var(--mono); }
+  .badges { display: flex; gap: 6px; flex-wrap: wrap; }
+  .badge { font-size: 11px; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--line); color: var(--fg2); white-space: nowrap; }
+  .badge.ok { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 45%, transparent); background: color-mix(in srgb, var(--accent) 12%, transparent); }
+  .badge.warn { color: var(--warn); border-color: color-mix(in srgb, var(--warn) 45%, transparent); background: color-mix(in srgb, var(--warn) 12%, transparent); }
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 14px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+  .card-top { display: flex; align-items: flex-start; gap: 10px; }
+  .bot-id { font-size: 13px; word-break: break-all; flex: 1; font-weight: 600; }
+  .kv { margin: 0; display: grid; grid-template-columns: 76px 1fr; gap: 5px 10px; align-items: center; font-size: 13px; }
+  .kv dt { color: var(--fg2); font-size: 12px; }
+  .kv dd { margin: 0; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  code.token { font-family: var(--mono); font-size: 12px; background: var(--panel2); border: 1px solid var(--line); border-radius: 6px; padding: 2px 7px; }
+  .test-row { display: flex; gap: 8px; }
+  .test-row input {
+    flex: 1; min-width: 0; font: inherit; color: var(--fg); background: var(--panel2);
+    border: 1px solid var(--line); border-radius: 8px; padding: 7px 10px;
+  }
+  .test-row input:focus { outline: none; border-color: var(--accent2); }
+  .card-foot { display: flex; justify-content: flex-end; }
+  .empty {
+    border: 1px dashed var(--line); border-radius: 12px; padding: 30px 16px;
+    text-align: center; color: var(--fg2); font-size: 13px;
+  }
+  .filters { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 10px; font-size: 13px; }
+  .filters input[type=text], .filters select {
+    font: inherit; color: var(--fg); background: var(--panel2); border: 1px solid var(--line);
+    border-radius: 8px; padding: 6px 10px; min-width: 150px;
+  }
+  .filters input[type=text]:focus, .filters select:focus { outline: none; border-color: var(--accent2); }
+  .filters label { display: flex; align-items: center; gap: 5px; color: var(--fg2); cursor: pointer; }
+  .table-wrap { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; overflow: auto; max-height: 62vh; }
+  table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  thead th {
+    position: sticky; top: 0; background: var(--panel2); text-align: left; font-weight: 600;
+    color: var(--fg2); padding: 9px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; z-index: 1;
+  }
+  tbody td { padding: 7px 10px; border-bottom: 1px solid color-mix(in srgb, var(--line) 55%, transparent); vertical-align: top; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr.fail { background: color-mix(in srgb, var(--danger) 7%, transparent); }
+  td.detail { max-width: 320px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--fg2); }
+  .nowrap { white-space: nowrap; }
+  .ok-text { color: var(--accent); }
+  .err-text { color: var(--danger); }
+  .tag { font-size: 11px; padding: 1px 7px; border-radius: 999px; border: 1px solid var(--line); color: var(--fg2); }
+  .tag.webui { color: var(--accent2); border-color: color-mix(in srgb, var(--accent2) 45%, transparent); }
+  .conn { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--fg2); }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--danger); }
+  .dot.on { background: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent); }
+  .modal { position: fixed; inset: 0; background: rgba(0,0,0,.6); display: none; align-items: center; justify-content: center; z-index: 50; padding: 16px; }
+  .modal.show { display: flex; }
+  .modal-box { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; width: 340px; max-width: 100%; text-align: center; }
+  .modal-head { display: flex; align-items: center; margin-bottom: 12px; font-weight: 600; }
+  .modal-head h3 { margin: 0; font-size: 15px; flex: 1; text-align: left; }
+  .x { padding: 2px 8px; border-radius: 6px; }
+  .qr-wrap { display: flex; align-items: center; justify-content: center; min-height: 268px; }
+  #qrImg { width: 268px; height: 268px; border-radius: 10px; background: #fff; padding: 6px; display: none; }
+  .spin { width: 26px; height: 26px; border: 3px solid var(--line); border-top-color: var(--accent); border-radius: 50%; animation: sp .8s linear infinite; }
+  @keyframes sp { to { transform: rotate(360deg); } }
+  .qr-status { margin: 12px 0 6px; font-size: 13.5px; }
+  .hint { color: var(--fg2); font-size: 12px; margin: 0 0 14px; text-align: left; }
+  .modal-foot { display: flex; gap: 8px; justify-content: flex-end; }
+  .toast {
+    position: fixed; left: 50%; bottom: 28px; transform: translate(-50%, 20px);
+    background: var(--panel); border: 1px solid var(--line); border-left: 3px solid var(--accent);
+    color: var(--fg); padding: 10px 16px; border-radius: 10px; font-size: 13px; max-width: 90vw;
+    opacity: 0; pointer-events: none; transition: .2s; z-index: 100;
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+  .toast.err { border-left-color: var(--danger); }
+  footer { margin-top: 34px; color: var(--fg2); font-size: 12px; text-align: center; line-height: 1.9; }
+  footer code { font-family: var(--mono); }
+  a { color: var(--accent2); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="head-in">
+    <h1>WeClawBot-API <small>WebUI</small></h1>
+    <div class="grow"></div>
+    <div class="conn"><span id="connDot" class="dot"></span><span id="connText" data-i18n="conn.connecting">连接中…</span></div>
+    <button class="mini" id="langBtn" onclick="toggleLang()" data-i18n-title="lang.title">EN</button>
+    <button class="primary" onclick="openQR()" data-i18n="btn.add">+ 添加账号</button>
+  </div>
+</header>
+
+<div class="wrap">
+  <h2><span data-i18n="sec.accounts">账号</span> <span id="botCount" class="count"></span><div class="grow"></div><button class="mini" onclick="loadBots(true)" data-i18n="btn.refresh">刷新</button></h2>
+  <div id="botList"></div>
+
+  <h2><span data-i18n="sec.logs">API 调用日志</span> <span id="logCount" class="count"></span>
+    <div class="grow"></div>
+    <button class="mini" onclick="loadLogs()" data-i18n="btn.reload">重新加载</button>
+    <button class="mini" onclick="clearLogsView()" data-i18n="btn.clear">清空列表</button>
+  </h2>
+  <div class="filters">
+    <select id="fBot" onchange="setFilter()"><option value="" data-i18n="filter.all">全部账号</option></select>
+    <input type="text" id="fQ" data-i18n-ph="filter.search" oninput="setFilter()">
+    <label><input type="checkbox" id="fFail" onchange="setFilter()"> <span data-i18n="filter.failonly">只看失败</span></label>
+    <span id="logHint" class="count"></span>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th data-i18n="th.time">时间</th><th data-i18n="th.source">来源</th><th data-i18n="th.method">方法</th>
+          <th data-i18n="th.bot">账号</th><th data-i18n="th.action">动作</th><th data-i18n="th.status">状态</th>
+          <th data-i18n="th.duration">耗时</th><th data-i18n="th.ip">来源 IP</th><th data-i18n="th.detail">详情</th>
+        </tr>
+      </thead>
+      <tbody id="logBody"></tbody>
+    </table>
+  </div>
+
+  <footer>
+    <span data-i18n-html="footer.api"></span><br>
+    <span data-i18n-html="footer.built"></span>
+  </footer>
+</div>
+
+<div id="qrModal" class="modal" onclick="if (event.target === this) closeQR()">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3 data-i18n="qr.title">添加账号</h3>
+      <button class="x" onclick="closeQR()">✕</button>
+    </div>
+    <div class="qr-wrap">
+      <img id="qrImg" data-i18n-alt="qr.alt" alt="登录二维码">
+      <div id="qrSpin" class="spin"></div>
+    </div>
+    <p id="qrStatus" class="qr-status" data-i18n="qr.fetching">正在获取二维码…</p>
+    <p class="hint" data-i18n="qr.hint">用微信扫描二维码并在手机上确认。</p>
+    <div class="modal-foot">
+      <button onclick="startQR()" data-i18n="btn.refreshqr">刷新二维码</button>
+      <button class="primary" onclick="closeQR()" data-i18n="btn.done">完成</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+'use strict';
+
+const H = { 'X-WebUI': '1' };
+const $ = id => document.getElementById(id);
+
+/* ---------------------------------------------------------------- 多语言
+   文案在 static/i18n/<code>.json 里，服务端通过 /admin/api/i18n 暴露出来。
+   加一种语言只需要往那个目录丢一个 json，前端会自动出现在切换列表里。 */
+
+let LANGS = [{ code: 'zh', name: '中文' }];   // 拉不到列表时的兜底
+let LANG = 'zh';
+let DICT = {};
+const D = k => DICT[k];                       // 可能 undefined
+const T = k => { const v = DICT[k]; return v === undefined ? k : v; };
+const tf = (k, ...a) => String(T(k)).replace(/\{(\d+)\}/g, (m, i) => (a[i] === undefined ? m : a[i]));
+
+async function loadDict(code) {
+  try {
+    const d = await api('/admin/api/i18n/' + encodeURIComponent(code));
+    if (d && typeof d === 'object' && !Array.isArray(d)) { DICT = d; return true; }
+  } catch (e) { /* 拉不到就保持当前语言 */ }
+  return false;
+}
+
+async function loadLangList() {
+  try {
+    const d = await api('/admin/api/i18n');
+    const langs = d && d.data && d.data.langs;
+    if (Array.isArray(langs) && langs.length) {
+      LANGS = langs;
+      return d.data.default || langs[0].code;
+    }
+  } catch (e) { /* 用兜底列表 */ }
+  return 'zh';
+}
+
+function detectLang(fallback) {
+  let saved = null;
+  try { saved = localStorage.getItem('weclawbot.lang'); } catch (e) { /* 隐私模式下会抛 */ }
+  if (saved && LANGS.some(l => l.code === saved)) return saved;
+  const nav = (navigator.language || '').toLowerCase();
+  for (const l of LANGS) {
+    if (nav === l.code.toLowerCase() || nav.startsWith(l.code.toLowerCase() + '-')) return l.code;
+  }
+  return LANGS.some(l => l.code === fallback) ? fallback : LANGS[0].code;
+}
+
+function applyStaticI18n() {
+  document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = T(el.dataset.i18n); });
+  document.querySelectorAll('[data-i18n-html]').forEach(el => { el.innerHTML = T(el.dataset.i18nHtml); });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => { el.placeholder = T(el.dataset.i18nPh); });
+  document.querySelectorAll('[data-i18n-title]').forEach(el => { el.title = T(el.dataset.i18nTitle); });
+  document.querySelectorAll('[data-i18n-alt]').forEach(el => { el.alt = T(el.dataset.i18nAlt); });
+}
+
+function updateLangBtn() {
+  const i = LANGS.findIndex(l => l.code === LANG);
+  const next = LANGS[(i + 1) % LANGS.length] || LANGS[0];
+  $('langBtn').textContent = next.name;      // 按钮上显示"点一下会变成哪种语言"
+  $('langBtn').title = T('lang.title');
+}
+
+async function setLang(code) {
+  if (code === LANG) return;
+  if (!await loadDict(code)) return;
+  LANG = LANGS.some(l => l.code === code) ? code : LANGS[0].code;
+  try { localStorage.setItem('weclawbot.lang', LANG); } catch (e) { /* 忽略 */ }
+  document.documentElement.lang = LANG;
+  applyStaticI18n();
+  updateLangBtn();
+  syncBotFilter();
+  $('logHint').textContent = logHintText();
+  loadBots(true);
+  renderLogs();
+  setConn(lastConnOk, lastConnMsg);
+}
+
+function toggleLang() {
+  const i = LANGS.findIndex(l => l.code === LANG);
+  const next = LANGS[(i + 1) % LANGS.length] || LANGS[0];
+  setLang(next.code);
+}
+
+/* ---------------------------------------------------------------- 基础工具 */
+
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c =>
+  ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+// errText 把接口返回的错误转成本地化文案：优先用稳定 code 查字典，
+// 查不到才退回服务端给的原文（服务端的 error 是中文兜底）。
+function errText(status, data) {
+  const code = data && data.error_code;
+  if (code) {
+    if (code === 'too_many_failures') return tf('err.too_many_failures', (data && data.retry_after) || '?');
+    const m = D('err.' + code);
+    if (m !== undefined) return m;
+  }
+  if (data && (data.error || data.message)) return data.error || data.message;
+  return 'HTTP ' + status;
+}
+
+async function api(path, opts) {
+  opts = opts || {};
+  const headers = Object.assign({}, H, opts.headers || {});
+  let body = opts.body;
+  if (body !== undefined && body !== null) {
+    headers['Content-Type'] = 'application/json';
+    body = JSON.stringify(body);
+  }
+  const res = await fetch(path, { method: opts.method || 'GET', headers: headers, body: body });
+  let data = null;
+  try { data = await res.json(); } catch (e) { /* 可能不是 JSON */ }
+  if (!res.ok) {
+    // fetch 的 401 浏览器通常不会再弹口令框，直接告诉用户刷新（导航请求才会弹）
+    if (res.status === 401) throw new Error(T('err.auth_required'));
+    throw new Error(errText(res.status, data));
+  }
+  return data;
+}
+
+let toastTimer = null;
+function toast(msg, ok) {
+  const el = $('toast');
+  el.textContent = msg;
+  el.className = 'toast show' + (ok === false ? ' err' : '');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { el.className = 'toast'; }, 3600);
+}
+
+async function copyText(text, btn) {
+  try {
+    await navigator.clipboard.writeText(text);
+    toast(T('toast.copied'));
+  } catch (e) {
+    // 局域网 http 访问时 clipboard API 不可用，退回 execCommand
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    let ok = false;
+    try { ok = document.execCommand('copy'); } catch (e2) { ok = false; }
+    document.body.removeChild(ta);
+    toast(ok ? T('toast.copied') : T('toast.copyFail'), ok);
+  }
+}
+
+/* ---------------------------------------------------------------- 账号列表 */
+
+let bots = [];
+let botsJSON = '';
+const testText = {};          // bot_id -> 测试消息草稿
+let logs = [];                // 新的在前
+let logTotal = 0;
+let logFile = '';
+const filter = { bot: '', q: '', fail: false };
+let streamAbort = null;
+let lastConnOk = false, lastConnMsg = '';
+let qrId = null, qrVersion = 0, qrTimer = null, qrDone = true, qrURL = null;
+
+function mask(token) {
+  if (!token) return '—';
+  return token.slice(0, 6) + '••••••••';
+}
+
+function botCard(b) {
+  const badges = [
+    b.monitoring ? '<span class="badge ok">' + esc(T('card.monitoring')) + '</span>'
+                 : '<span class="badge warn">' + esc(T('card.notMonitoring')) + '</span>',
+    b.activated ? '<span class="badge ok">' + esc(T('card.activated')) + '</span>'
+                : '<span class="badge warn" title="' + esc(T('card.notActivatedTip')) + '">' + esc(T('card.notActivated')) + '</span>'
+  ].join('');
+  return '<div class="card">'
+    + '<div class="card-top"><div class="bot-id mono">' + esc(b.bot_id) + '</div><div class="badges">' + badges + '</div></div>'
+    + '<dl class="kv">'
+    +   '<dt>' + esc(T('card.token')) + '</dt><dd>'
+    +     '<code class="token mono" data-token="' + esc(b.api_token) + '" data-shown="0">' + esc(mask(b.api_token)) + '</code>'
+    +     '<button class="mini" onclick="toggleToken(this)">' + esc(T('btn.show')) + '</button>'
+    +     '<button class="mini" data-t="' + esc(b.api_token) + '" onclick="copyText(this.dataset.t)">' + esc(T('btn.copy')) + '</button>'
+    +   '</dd>'
+    +   '<dt>' + esc(T('card.recv')) + '</dt><dd>' + (b.recv_count || 0) + ' ' + esc(T('card.recvUnit')) + '</dd>'
+    + '</dl>'
+    + '<div class="test-row">'
+    +   '<input data-keep="1" data-bot="' + esc(b.bot_id) + '" value="' + esc(testText[b.bot_id] || '') + '"'
+    +     ' placeholder="' + esc(T('card.testPlaceholder')) + '" oninput="testText[this.dataset.bot] = this.value">'
+    +   '<button class="primary" data-bot="' + esc(b.bot_id) + '" onclick="testPush(this)">' + esc(T('btn.test')) + '</button>'
+    + '</div>'
+    + '<div class="card-foot"><button class="danger" data-bot="' + esc(b.bot_id) + '" onclick="unbind(this)">' + esc(T('btn.unbind')) + '</button></div>'
+    + '</div>';
+}
+
+function toggleToken(btn) {
+  const code = btn.closest('dd').querySelector('code.token');
+  const shown = code.dataset.shown === '1';
+  code.textContent = shown ? mask(code.dataset.token) : code.dataset.token;
+  code.dataset.shown = shown ? '0' : '1';
+  btn.textContent = shown ? T('btn.show') : T('btn.hide');
+}
+
+async function loadBots(force) {
+  let d;
+  try {
+    d = await api('/admin/api/bots');
+    setConn(true);
+  } catch (e) {
+    setConn(false, e.message);
+    return;
+  }
+  bots = (d.data && d.data.bots) || [];
+  syncBotFilter();
+
+  const json = JSON.stringify(bots);
+  if (json === botsJSON && !force) return;
+  // 正在输入测试消息时不重绘，避免输入框失去焦点
+  const ae = document.activeElement;
+  if (!force && ae && ae.dataset && ae.dataset.keep === '1') return;
+  botsJSON = json;
+
+  $('botCount').textContent = bots.length ? tf('count.bots', bots.length) : '';
+  $('botList').innerHTML = bots.length
+    ? '<div class="cards">' + bots.map(botCard).join('') + '</div>'
+    : '<div class="empty">' + esc(T('empty.noBots')) + '</div>';
+}
+
+function syncBotFilter() {
+  const sel = $('fBot');
+  const cur = sel.value;
+  const opts = ['<option value="">' + esc(T('filter.all')) + '</option>'];
+  for (const b of bots) {
+    opts.push('<option value="' + esc(b.bot_id) + '">' + esc(b.bot_id) + '</option>');
+  }
+  sel.innerHTML = opts.join('');
+  sel.value = bots.some(b => b.bot_id === cur) ? cur : '';
+}
+
+async function testPush(btn) {
+  const botId = btn.dataset.bot;
+  const text = (testText[botId] || '').trim() || tf('test.default', new Date().toLocaleString());
+  btn.disabled = true;
+  btn.textContent = T('btn.sending');
+  try {
+    const d = await api('/admin/api/bots/' + encodeURIComponent(botId) + '/test', {
+      method: 'POST', body: { text: text }
+    });
+    toast(tf('toast.pushOk', (d && d.duration_ms) || 0));
+  } catch (e) {
+    toast(tf('toast.pushFail', e.message), false);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = T('btn.test');
+  }
+}
+
+async function unbind(btn) {
+  const botId = btn.dataset.bot;
+  if (!confirm(tf('confirm.unbind', botId))) return;
+  try {
+    await api('/admin/api/bots/' + encodeURIComponent(botId), { method: 'DELETE' });
+    toast(tf('toast.unbound', botId));
+  } catch (e) {
+    toast(tf('toast.unbindFail', e.message), false);
+  }
+  loadBots(true);
+}
+
+/* ---------------------------------------------------------------- 扫码登录 */
+
+function openQR() {
+  $('qrModal').classList.add('show');
+  startQR();
+}
+
+function closeQR() {
+  $('qrModal').classList.remove('show');
+  clearInterval(qrTimer);
+  qrTimer = null;
+  qrId = null;
+  qrDone = true;
+  if (qrURL) { URL.revokeObjectURL(qrURL); qrURL = null; }
+  loadBots(true);
+}
+
+function qrStatusText(html) { $('qrStatus').innerHTML = html; }
+
+async function startQR() {
+  clearInterval(qrTimer);
+  qrTimer = null;
+  qrId = null;
+  qrDone = false;
+  qrStatusText(esc(T('qr.fetching')));
+  $('qrImg').style.display = 'none';
+  $('qrSpin').style.display = 'block';
+
+  let d;
+  try {
+    d = await api('/admin/api/login/start', { method: 'POST' });
+  } catch (e) {
+    qrDone = true;
+    $('qrSpin').style.display = 'none';
+    qrStatusText(esc(tf('qr.fetchFail', e.message)));
+    return;
+  }
+
+  qrId = d.data.id;
+  qrVersion = d.data.version;
+  try {
+    await showQRImage();
+  } catch (e) {
+    qrDone = true;
+    $('qrSpin').style.display = 'none';
+    qrStatusText(esc(tf('qr.imgFail', e.message)));
+    return;
+  }
+  qrStatusText(esc(T('qr.waiting')));
+  qrTimer = setInterval(pollQR, 1200);
+}
+
+async function showQRImage() {
+  const res = await fetch('/admin/api/login/qr?id=' + encodeURIComponent(qrId) + '&v=' + qrVersion, {
+    headers: H
+  });
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  const blob = await res.blob();
+  if (qrURL) URL.revokeObjectURL(qrURL);
+  qrURL = URL.createObjectURL(blob);
+  $('qrImg').src = qrURL;
+  $('qrImg').style.display = 'block';
+  $('qrSpin').style.display = 'none';
+}
+
+async function pollQR() {
+  if (qrDone || !qrId) return;
+  let d;
+  try {
+    d = await api('/admin/api/login/status?id=' + encodeURIComponent(qrId));
+  } catch (e) {
+    qrDone = true;
+    clearInterval(qrTimer);
+    qrTimer = null;
+    qrStatusText(esc(tf('qr.sessionLost', e.message)));
+    return;
+  }
+  const s = d.data;
+  if (s.version !== qrVersion) {
+    qrVersion = s.version;
+    try { await showQRImage(); } catch (e) { /* 下次轮询再试 */ }
+    toast(T('toast.qrRefreshed'));
+  }
+  switch (s.status) {
+    case 'wait':
+      qrStatusText(esc(T('qr.waiting')));
+      break;
+    case 'scaned':
+      qrStatusText(esc(T('qr.scaned')));
+      break;
+    case 'confirmed':
+      qrDone = true;
+      clearInterval(qrTimer);
+      qrTimer = null;
+      qrStatusText(tf('qr.ok', esc(s.bot_id)));
+      toast(tf('toast.added', s.bot_id));
+      loadBots(true);
+      loadLogs();
+      setTimeout(closeQR, 1500);
+      break;
+    case 'failed':
+      qrDone = true;
+      clearInterval(qrTimer);
+      qrTimer = null;
+      qrStatusText(tf('qr.failed', esc(loginFailText(s))));
+      break;
+  }
+}
+
+// loginFailText 把登录失败原因本地化：优先用服务端的稳定 code，退回原文。
+function loginFailText(s) {
+  const code = s && s.error_code;
+  if (code) {
+    const m = D('err.' + code);
+    if (m !== undefined) return s.error ? m + ': ' + s.error : m;
+  }
+  return (s && s.error) || T('err.login_failed');
+}
+
+/* ---------------------------------------------------------------- 日志 */
+
+function shortBot(id) {
+  if (!id) return '';
+  const i = id.indexOf('@');
+  return i > 0 ? id.slice(0, i) : id;
+}
+
+function actionLabel(e) {
+  const m = D('action.' + e.action);
+  return m === undefined ? (e.action || '') : m;
+}
+
+// logDetail 详情列：已知 code 用本地化文案，后面拼服务端给的原始细节
+function logDetail(e) {
+  if (e.error_code) {
+    const m = D('err.' + e.error_code);
+    if (m !== undefined) return e.error ? m + ': ' + e.error : m;
+  }
+  if (e.error) return e.error;
+  if (e.text) return e.text;
+  const m = D('logdetail.' + e.action);
+  return m === undefined ? '' : m;
+}
+
+function logRow(e) {
+  const detail = logDetail(e);
+  const cell = detail ? (e.ok ? esc(detail) : '<span class="err-text">' + esc(detail) + '</span>') : '';
+  return '<tr class="' + (e.ok ? '' : 'fail') + '">'
+    + '<td class="mono nowrap">' + esc((e.time || '').slice(5)) + '</td>'
+    + '<td><span class="tag ' + (e.source === 'webui' ? 'webui' : '') + '">'
+      + esc(e.source === 'webui' ? T('src.webui') : T('src.api')) + '</span></td>'
+    + '<td class="mono">' + esc(e.method || '') + '</td>'
+    + '<td class="mono nowrap" title="' + esc(e.bot_id) + '">' + esc(shortBot(e.bot_id)) + '</td>'
+    + '<td>' + esc(actionLabel(e)) + '</td>'
+    + '<td class="mono ' + (e.ok ? 'ok-text' : 'err-text') + '">' + esc(e.status || '') + '</td>'
+    + '<td class="mono nowrap">' + esc(e.duration_ms != null ? e.duration_ms + 'ms' : '') + '</td>'
+    + '<td class="mono nowrap">' + esc(e.ip || '') + '</td>'
+    + '<td class="detail" title="' + esc(detail) + '">' + cell + '</td>'
+    + '</tr>';
+}
+
+function logMatches(e) {
+  if (filter.bot && e.bot_id !== filter.bot) return false;
+  if (filter.fail && e.ok) return false;
+  if (filter.q) {
+    const hay = [e.bot_id, e.action, e.path, e.text, e.error, e.ip, e.status].join(' ').toLowerCase();
+    if (hay.indexOf(filter.q.toLowerCase()) < 0) return false;
+  }
+  return true;
+}
+
+let renderTimer = null;
+function renderLogsSoon() {
+  if (renderTimer) return;
+  renderTimer = setTimeout(() => { renderTimer = null; renderLogs(); }, 150);
+}
+
+function renderLogs() {
+  const shown = logs.filter(logMatches).slice(0, 400);
+  $('logBody').innerHTML = shown.length
+    ? shown.map(logRow).join('')
+    : '<tr><td colspan="9" class="empty" style="border:none;padding:26px">' + esc(T('empty.noLogs')) + '</td></tr>';
+  $('logCount').textContent = tf('count.logs', shown.length, logs.length);
+}
+
+function logHintText() {
+  return logFile ? tf('logs.hintFile', logTotal, logFile) : tf('logs.hintMemory', logTotal);
+}
+
+async function loadLogs() {
+  let d;
+  try {
+    d = await api('/admin/api/logs?limit=300');
+  } catch (e) {
+    toast(tf('toast.logsFail', e.message), false);
+    return;
+  }
+  logs = (d.data && d.data.entries) || [];
+  logTotal = (d.data && d.data.size) || 0;
+  logFile = (d.data && d.data.file) || '';
+  $('logHint').textContent = logHintText();
+  renderLogs();
+}
+
+function clearLogsView() {
+  logs = [];
+  renderLogs();
+}
+
+function setFilter() {
+  filter.bot = $('fBot').value;
+  filter.q = $('fQ').value.trim();
+  filter.fail = $('fFail').checked;
+  renderLogs();
+}
+
+function pushLog(e) {
+  logs.unshift(e);
+  if (logs.length > 600) logs.pop();
+  renderLogsSoon();
+}
+
+/* ---------------------------------------------------------------- SSE 实时流 */
+
+function setConn(ok, msg) {
+  lastConnOk = ok;
+  lastConnMsg = msg || '';
+  $('connDot').className = 'dot' + (ok ? ' on' : '');
+  $('connText').textContent = ok ? T('conn.live') : (msg || T('conn.offline'));
+  $('connText').title = msg || '';
+}
+
+async function connectStream() {
+  if (streamAbort) streamAbort.abort();
+  streamAbort = new AbortController();
+  const signal = streamAbort.signal;
+  try {
+    const res = await fetch('/admin/api/logs/stream', { headers: H, signal: signal });
+    if (res.status === 401) {
+      // 口令失效：停止重连，否则每 3 秒一次 401 会把失败计数喂到锁定
+      setConn(false, T('conn.authlost'));
+      return;
+    }
+    if (!res.ok || !res.body) throw new Error('HTTP ' + res.status);
+    setConn(true);
+
+    const reader = res.body.getReader();
+    const dec = new TextDecoder();
+    let buf = '';
+    for (;;) {
+      const r = await reader.read();
+      if (r.done) break;
+      buf += dec.decode(r.value, { stream: true });
+      let idx;
+      while ((idx = buf.indexOf('\n\n')) >= 0) {
+        const chunk = buf.slice(0, idx);
+        buf = buf.slice(idx + 2);
+        for (const line of chunk.split('\n')) {
+          if (line.startsWith('data: ')) {
+            try { pushLog(JSON.parse(line.slice(6))); } catch (e) { /* 忽略坏行 */ }
+          }
+        }
+      }
+    }
+  } catch (e) {
+    if (e.name !== 'AbortError') setConn(false, e.message);
+  }
+  if (!signal.aborted) {
+    setConn(false, T('conn.broken'));
+    setTimeout(connectStream, 3000);
+  }
+}
+
+/* ---------------------------------------------------------------- 启动 */
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && $('qrModal').classList.contains('show')) closeQR();
+});
+
+async function boot() {
+  const fallback = await loadLangList();
+  const want = detectLang(fallback);
+  if (!await loadDict(want)) await loadDict(fallback);
+  LANG = LANGS.some(l => l.code === want) ? want : fallback;
+  document.documentElement.lang = LANG;
+  applyStaticI18n();
+  updateLangBtn();
+
+  $('logHint').textContent = logHintText();
+  loadBots(true);
+  loadLogs();
+  connectStream();
+  setInterval(() => loadBots(false), 5000);
+  setInterval(() => loadLogs(), 60000);   // 兜底，防止 SSE 断连期间漏条目
+}
+
+boot();
+</script>
+</body>
+</html>

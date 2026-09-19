@@ -1,0 +1,22 @@
+name: weclawbot-api-webui
+
+services:
+  weclawbot-api-webui:
+    # 本地构建的镜像；若不想自己构建，替换成你发布后的镜像地址即可
+    image: weclawbot-api-webui:1.0.0
+    # build: .
+    container_name: weclawbot-api-webui
+
+    # 显式声明使用 Docker 默认的 bridge 网络
+    network_mode: bridge
+
+    ports:
+      - "26322:26322"
+
+    volumes:
+      - ./config:/app/config
+
+    # 可选：把 API 调用日志落盘成 JSONL，重启不丢（文件直接放在挂载出来的 config 目录里）
+    # command: ["-log-file", "/app/config/api.log"]
+
+    restart: unless-stopped
