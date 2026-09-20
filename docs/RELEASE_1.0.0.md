@@ -16,8 +16,7 @@
 下载下面两个包里跟机器架构匹配的那个：
 
 ```bash
-uname -m                        # x86_64 → x86-64 那份，aarch64 → arm64 那份
-docker load -i WeClawBot-Api-WebUI_Docker_1.0.0_x86-64.tar.gz
+docker load -i WeClawBot-Api-WebUI_Docker_1.0.0_<架构>.tar.gz
 docker run -d --name weclawbot-api-webui --network bridge \
   -p 26322:26322 -v ./config:/app/config \
   --restart unless-stopped weclawbot-api-webui:1.0.0
@@ -42,8 +41,7 @@ Single binary, 9.3 MB, one dependency (`rsc.io/qr`; upstream has four).
 Download the package matching your architecture:
 
 ```bash
-uname -m                        # x86_64 → the x86-64 package, aarch64 → the arm64 one
-docker load -i WeClawBot-Api-WebUI_Docker_1.0.0_x86-64.tar.gz
+docker load -i WeClawBot-Api-WebUI_Docker_1.0.0_<Arch>.tar.gz
 docker run -d --name weclawbot-api-webui --network bridge \
   -p 26322:26322 -v ./config:/app/config \
   --restart unless-stopped weclawbot-api-webui:1.0.0
