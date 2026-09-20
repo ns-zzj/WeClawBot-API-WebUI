@@ -6,6 +6,8 @@ An extended version of [cp0204/WeClawBot-API](https://github.com/cp0204/WeClawBo
 
 Add accounts by scanning a QR code, unbind them, send test pushes and read the API call log — all from the browser, no more `docker exec` into the container.
 
+![WeClawBot-API WebUI](img/Preview-EN.png)
+
 > Tiny and self-contained, like upstream: the frontend is a single HTML file (plain JS, no build step, no third-party libraries) embedded into the binary with `go:embed`, and QR codes are generated server-side by `rsc.io/qr`. The whole project depends on exactly one module (`rsc.io/qr`; upstream has four).
 
 ## Attribution

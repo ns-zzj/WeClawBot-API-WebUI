@@ -6,6 +6,8 @@
 
 在网页上就能完成扫码添加账号、解绑账号、测试推送、查看 API 调用日志，不用再 `docker exec` 进容器敲命令。
 
+![WeClawBot-API WebUI](img/Preview.png)
+
 > 体积极小、独立运行：前端是单个 HTML 文件（原生 JS、无构建、无第三方库），通过 `go:embed` 打进二进制；二维码由服务端 `rsc.io/qr` 生成。整个项目只依赖 `rsc.io/qr` 一个模块（原项目有 4 个）。
 
 ## 致谢
