@@ -27,7 +27,6 @@ docker run -d --name weclawbot-api-webui --network bridge \
 ### 注意
 
 - **不要把 26322 端口映射到公网**（HTTP 明文，口令会被抓包）
-- 本项目自有代码为 MIT；依赖的 `rsc.io/qr` 为 BSD 3-Clause。第三方组件的版权声明与许可全文已随包分发，在容器内 `/app/THIRD_PARTY_NOTICES.md`，仓库里见 [THIRD_PARTY_NOTICES.md](https://github.com/ns-zzj/WeClawBot-API-WebUI/blob/main/THIRD_PARTY_NOTICES.md)
 
 ---
 
@@ -53,4 +52,3 @@ Open `http://<host-ip>:26322/`. The username is `admin` and the password is prin
 ### Notes
 
 - **Do not expose port 26322 to the internet** (plain HTTP — the password would be sniffable).
-- This project's own code is MIT; the bundled `rsc.io/qr` is BSD 3-Clause. The third-party copyright notice and full license text ship with the package, at `/app/THIRD_PARTY_NOTICES.md` inside the container — see [THIRD_PARTY_NOTICES.md](https://github.com/ns-zzj/WeClawBot-API-WebUI/blob/main/THIRD_PARTY_NOTICES.md) in the repo.

@@ -2,7 +2,7 @@
 FROM golang:1.24-alpine AS builder
 
 # 默认使用官方代理；国内网络请换成镜像源再构建：
-#   docker build --build-arg GOPROXY=https://goproxy.cn,direct -t weclawbot-api-webui:1.0.0 .
+#   docker build --build-arg GOPROXY=https://goproxy.cn,direct -t weclawbot-api-webui:1.0.1 .
 ARG GOPROXY=https://proxy.golang.org,direct
 ENV GOPROXY=${GOPROXY}
 

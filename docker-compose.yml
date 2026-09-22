@@ -3,7 +3,7 @@ name: weclawbot-api-webui
 services:
   weclawbot-api-webui:
     # 本地构建的镜像；若不想自己构建，替换成你发布后的镜像地址即可
-    image: weclawbot-api-webui:1.0.0
+    image: weclawbot-api-webui:1.0.1
     # build: .
     container_name: weclawbot-api-webui
 
