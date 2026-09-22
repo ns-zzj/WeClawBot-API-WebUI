@@ -15,6 +15,10 @@ Add accounts by scanning a QR code, unbind them, send test pushes and read the A
 Based on [cp0204/WeClawBot-API](https://github.com/cp0204/WeClawBot-API) ([MIT License](https://github.com/Cp0204/WeClawBot-API/blob/main/LICENSE)).
 Also references [Tencent/openclaw-weixin](https://github.com/Tencent/openclaw-weixin) ([MIT License](https://github.com/Tencent/openclaw-weixin/blob/main/LICENSE)).
 
+This project also depends on a third-party Go component (`rsc.io/qr`, BSD 3-Clause).
+Its copyright notice and full license text are in
+[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md); ship that file alongside any binary or image.
+
 ## Compatibility with upstream
 
 - The public API `/bots/{bot_id}/messages` and `/bots/{bot_id}/typing` is **unchanged** — existing callers keep working.

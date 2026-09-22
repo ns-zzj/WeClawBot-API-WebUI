@@ -15,6 +15,9 @@
 基于 [cp0204/WeClawBot-API](https://github.com/cp0204/WeClawBot-API) ([MIT License](https://github.com/Cp0204/WeClawBot-API/blob/main/LICENSE)) 二次开发。
 参考 [Tencent/openclaw-weixin](https://github.com/Tencent/openclaw-weixin) ([MIT License](https://github.com/Tencent/openclaw-weixin/blob/main/LICENSE)) 。
 
+本项目还依赖了第三方 Go 组件（`rsc.io/qr`，BSD 3-Clause）。其版权声明与许可全文见
+[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)，发布二进制或镜像时请一并附带该文件。
+
 ## 与原项目兼容性
 
 - 原项目的对外接口 `/bots/{bot_id}/messages` & `/bots/{bot_id}/typing` **未作任何改动**，调用方无需改动。

@@ -30,6 +30,11 @@ RUN apk add --no-cache ca-certificates tzdata
 # Copy binary from builder
 COPY --from=builder /app/weclawbot-api .
 
+# 第三方组件声明必须随镜像一起分发。rsc.io/qr 是 BSD 3-Clause，其中一条明确要求
+# 「以二进制形式再分发时，必须在随附的文档或材料中重现版权声明和免责声明」——
+# 镜像就是二进制分发，声明文件缺了就是不合规。
+COPY --from=builder /app/THIRD_PARTY_NOTICES.md .
+
 # Create config directory and volume
 RUN mkdir -p /app/config && \
     ln -s /app/weclawbot-api /usr/local/bin/weclawbot-api && \
